@@ -1,0 +1,241 @@
+{% extends "index_nav.html" %}
+{% block content1 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advocate Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container-reg {
+            width: 60%;
+            margin: 50px auto;
+            background-color: white;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="file"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        btn-reg {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+        .form-group textarea {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2>Advocate Registration</h2>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+<div class="container-reg">
+   
+    
+    <form method="POST" enctype="multipart/form-data" action="{%url 'register_advocate'%}">
+        {% csrf_token %}
+        
+        <!-- User Login Fields -->
+        
+
+        <!-- Advocate Personal Information Fields -->
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            {{ advocate_form.name }}
+
+    {% if advocate_form.errors.name %}
+    <small class="text-danger">
+        {% for error in advocate_form.errors.name %}
+            {{ error }}
+        {% endfor %}
+    </small>
+{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="phone_number">Phone Number</label>
+            {{ advocate_form.phone_number }}
+
+    {% if advocate_form.errors.phone_number %}
+    <small class="text-danger">
+        {% for error in advocate_form.errors.phone_number %}
+            {{ error }}
+        {% endfor %}
+    </small>
+{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age</label>
+            {{ advocate_form.age }}
+            {% if advocate_form.errors.age %}
+    <small class="text-danger">
+        {% for error in advocate_form.errors.age %}
+            {{ error }}
+        {% endfor %}
+    </small>
+{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            {{ advocate_form.gender }}
+        </div>
+
+        <div class="form-group">
+            <label for="photo">Profile Photo</label>
+            {{ advocate_form.photo }}
+        </div>
+
+        <div class="form-group">
+            <label for="certificate">Certificate</label>
+            {{ advocate_form.certificate }}
+        </div>
+
+        <div class="form-group">
+            <label for="enrollment_year">Enrollment Year</label>
+            {{ advocate_form.enrollment_year }}
+            {% if advocate_form.errors.enrollment_year %}
+    <small class="text-danger">
+        {% for error in advocate_form.errors.enrollment_year %}
+            {{ error }}
+        {% endfor %}
+    </small>
+{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="qualification">Qualification</label>
+            {{ advocate_form.qualification }}
+        </div>
+        <div class="form-group">
+            <label for="gender">Specialization</label>
+            {{ advocate_form.category }}
+        </div>
+        <div class="form-group">
+            <label for="practice_description">Practice Description</label>
+            {{ advocate_form.practice_description }}
+        </div>
+
+        <!-- Advocate Address Information -->
+        <div class="form-group">
+            <label for="office_location">Office Location</label>
+            {{ advocate_form.office_location }}
+        </div>
+
+        <div class="form-group">
+            <label for="city">City</label>
+            {{ advocate_form.city }}
+        </div>
+
+        <div class="form-group">
+            <label for="district">District</label>
+            {{ advocate_form.district }}
+        </div>
+
+        <div class="form-group">
+            <label for="pincode">Pincode</label>
+            {{ advocate_form.pincode }}
+            {% if advocate_form.errors.pincode %}
+    <small class="text-danger">
+        {% for error in advocate_form.errors.pincode %}
+            {{ error }}
+        {% endfor %}
+    </small>
+{% endif %}
+        </div>
+
+        <!-- Status and Grade (Optional) -->
+        <div class="form-group">
+            <label for="bcnumber">BC Number</label>
+            {{ advocate_form.bcnumber }}
+        </div>
+
+        <div class="form-group">
+            <label for="sitting_rate">Sitting Rate</label>
+            {{ advocate_form.sitting_rate }}
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            {{ user_log_form.email }}
+            {% if advocate_form.errors.email %}
+    <small class="text-danger">
+        {% for error in advocate_form.errors.email %}
+            {{ error }}
+        {% endfor %}
+    </small>
+{% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password</label>
+            {{ user_log_form.password }}
+            {% if advocate_form.errors.password %}
+    <small class="text-danger">
+        {% for error in user_log_form.errors.password %}
+            {{ error }}
+        {% endfor %}
+    </small>
+{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">Confirm Password</label>
+            {{ user_log_form.confirm_password }}
+        </div>
+        <!-- Submit Button -->
+        <div class="form-group">
+            <button type="submit"  class="btn btn-dark btn-block" style="border-radius: 25px;">Register Advocate</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
+{% endblock %}

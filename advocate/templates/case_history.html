@@ -1,0 +1,124 @@
+
+{% extends "advocatenav.html" %}
+{% load static %}
+
+{% block stylecontent %}
+    <style>
+        /* Basic Form Styling */
+        .case-form-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .case-form-container h2 {
+            text-align: center;
+            color: #3a3a3a;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        .form-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .form-button:hover {
+            background-color: #218838;
+        }
+
+        .status-select {
+            background-color: #f0f0f0;
+        }
+
+        .form-group span {
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="case-form-container">
+            <h2>Add Case History</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+               
+
+                <div class="form-group">
+                    <label for="id_caseno">Case Number</label>
+                    <input type="text" name="caseno" class="form-control" placeholder="Enter case number..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_category">Category</label>
+                    <select name="category" class="form-control" required>
+                        <option value="" disabled selected>Select a category</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.categoryname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_court">Court</label>
+                    <select name="court" class="form-control" required>
+                        <option value="" disabled selected>Select a court</option>
+                        {% for court_item in courts %}
+                            <option value="{{ court_item.id }}">{{ court_item.courtname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+
+                <div class="form-group">
+                    <label for="id_description">Case Description</label>
+                    <textarea name="description" class="form-control" placeholder="Describe your case..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_result">Result</label>
+                    <input type="text" name="result" class="form-control" placeholder="Enter the result..." required>
+                </div>
+
+                <button type="submit" class="form-button">Submit Case</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

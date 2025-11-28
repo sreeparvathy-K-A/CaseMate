@@ -1,0 +1,201 @@
+{% extends 'clientnav.html' %}
+{%load static%}
+{% block stylecontent %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    /* General container styling */
+.faqs {
+    padding: 60px 0;
+}
+
+.faqs .container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Styling the header */
+.section-header {
+    margin-bottom: 30px;
+}
+
+.section-header h2 {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: left;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Image section styling */
+.faqs-img img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the accordion cards */
+.card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border: none;
+    padding: 20px;
+}
+
+.card-header .card-link {
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.card-header .card-link span {
+    margin-right: 10px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.card-body {
+    padding: 20px;
+    background-color: #f1f1f1;
+    border-radius: 0 0 10px 10px;
+    font-size: 16px;
+}
+
+/* Hover effects on cards */
+.card-header:hover {
+    background-color: #e9ecef;
+}
+
+/* Button styling */
+.btn {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    margin-top: 30px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Styling the FAQ section's responsiveness */
+@media (max-width: 767px) {
+    .faqs .container {
+        padding: 15px;
+    }
+
+    .faqs .row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .col-md-5,
+    .col-md-7 {
+        width: 100%;
+    }
+
+    .section-header h2 {
+        font-size: 28px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- FAQs Start -->
+<div class="faqs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="faqs-img">
+                    <img src="{%static 'indexstyle/img/faqs.jpg'%}" alt="Image">
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="section-header">
+                    <h2>Have A Question?</h2>
+                </div>
+                <div id="accordion">
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="true">
+                                <span>1</span> What is your refund policy?
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="collapse show" data-parent="#accordion">
+                            <div class="card-body">
+                                We offer a 30-day money-back guarantee on all purchases. If you are not satisfied, you can request a full refund within 30 days.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" href="#collapseTwo">
+                                <span>2</span> How can I contact customer support?
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                            <div class="card-body">
+                                You can contact our customer support via email at support@example.com or call us at (123) 456-7890.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" href="#collapseThree">
+                                <span>3</span> How long does shipping take?
+                            </a>
+                        </div>
+                        <div id="collapseThree" class="collapse" data-parent="#accordion">
+                            <div class="card-body">
+                                Shipping typically takes 5-7 business days for domestic orders, and 10-14 days for international orders.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" href="#collapseFour">
+                                <span>4</span> Do you offer international shipping?
+                            </a>
+                        </div>
+                        <div id="collapseFour" class="collapse" data-parent="#accordion">
+                            <div class="card-body">
+                                Yes, we offer international shipping to most countries. Please check our shipping policy for more details.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" href="#collapseFive">
+                                <span>5</span> How can I track my order?
+                            </a>
+                        </div>
+                        <div id="collapseFive" class="collapse" data-parent="#accordion">
+                            <div class="card-body">
+                                After your order is shipped, you will receive a tracking number via email to track your package.
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <a class="btn btn-primary" href="#">Ask more</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FAQs End -->
+{% endblock %}

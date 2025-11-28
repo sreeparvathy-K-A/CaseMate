@@ -1,0 +1,367 @@
+
+{% extends "clientnav.html" %}
+{% load static %}
+
+{% block stylecontent %}
+    <style>
+ 
+            .advocate-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background: #f9f9f9;
+                margin-bottom: 10px;
+            }
+            
+            .advocate-photo {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+            
+            .select-advocate {
+                margin-left: auto;
+            }
+         
+            
+        .case-list {
+            margin-top: 20px;
+        }
+        
+        .case-item {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+        
+        .case-item h4 {
+            color: #007bff;
+            margin-bottom: 8px;
+        }
+        
+        .case-item p {
+            color: #333;
+        }
+        
+        .case-item small {
+            color: #777;
+        }
+        
+        /* Basic Form Styling */
+        .case-form-container {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .case-form-container h2 {
+            text-align: center;
+            color: #3a3a3a;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        .form-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .form-button:hover {
+            background-color: #218838;
+        }
+
+        .status-select {
+            background-color: #f0f0f0;
+        }
+
+        .form-group span {
+            color: red;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="case-form-container">
+            <h2>Add Case Details</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                      </div>
+
+              
+
+                <div class="form-group">
+                    <label for="id_category">Category</label>
+                    <select name="category" class="form-control" required>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.categoryname }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_description">Case Description</label>
+                    <textarea name="description" class="form-control" placeholder="Describe your case..." required></textarea>
+                </div>
+
+              
+
+                <button type="submit" class="form-button">Submit Case</button>
+            </form>
+        </div>
+        <div class="container mt-4">
+            <div class="modal fade" id="advocateModal" tabindex="-1" aria-labelledby="advocateModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="advocateModalLabel">Select an Advocate</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                             <!--<input type="text" id="searchAdvocate" class="form-control mb-3" placeholder="Search Advocates...">
+                           -->
+                             <div id="advocateList">
+                                <!-- Advocates will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h3>Submitted Case Details</h3>
+            {% if mycases %}
+            <div class="case-list">
+                {% for case in mycases %}
+                    <div class="case-item">
+                        <h4><strong>Category : </strong>{{ case.category.categoryname }}</h4>
+                        <p><strong>case Description : </strong>{{ case.description }}</p>
+                        <small>Submitted on: {{ case.date|date:"M d, Y" }} {{ case.created_at|time:"H:i" }}</small>
+        
+                        {% with advocate_exists=False %}
+                            {% for case_advocate in case_advocates %}
+                                {% if case_advocate.case_id == case.id %}
+                                    {% with advocate_exists=True advocate_request=case_advocate %}
+                                        <p><strong>Assigned Advocate : </strong> {{ advocate_request.advocate.name }}</p>
+                                        <p><strong>Phone : </strong> {{ advocate_request.advocate.phone_number }}</p>
+                                        <p><strong>Status:</strong> {{ advocate_request.status }}</p>
+        
+                                        {% if advocate_request.status == "Approved" %}
+                                            {% if case.payment_status == "Completed" %}
+                                                <p style="color: green; font-weight: bold;">✅ Payment Completed</p>
+                                            {% else %}
+                                                <button class="btn btn-success pay-now-btn" data-case-id="{{ case.id }}">
+                                                    💰 Advance Payment ₹2500
+                                                </button>
+                                                <div id="qr-container-{{ case.id }}" style="display:none;">
+                                                    <img id="qr-image-{{ case.id }}" src="" alt="QR Code for ₹2500">
+                                                    <button class="btn btn-primary confirm-payment" data-case-id="{{ case.id }}">
+                                                        Pay Now
+                                                    </button>
+                                                </div>
+                                            {% endif %}
+                                        {% elif advocate_request.status == "Rejected" %}
+                                            <p style="color: red; font-weight: bold;">❌ Status: Rejected</p>
+                                            <button class="btn btn-primary fix-advocate-btn" data-case-id="{{ case.id }}" data-category="{{ case.category.id }}">
+                                                🔄 Fix Advocate
+                                            </button>
+                                        {% elif advocate_request.status == "Pending" %}
+                                            <p style="color: red;">⏳ Approval Pending</p>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endif %}
+                            {% endfor %}
+        
+                            {% if not advocate_exists %}
+                                <button class="btn btn-primary fix-advocate-btn" data-case-id="{{ case.id }}" data-category="{{ case.category.id }}">
+                                    🔍 Fix Advocate
+                                </button>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p style="color: #777;">No cases submitted yet.</p>
+        {% endif %}
+        
+        
+        
+               </div>
+        
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(".pay-now-btn").click(function () {
+            var caseId = $(this).data("case-id");
+            var qrImg = $("#qr-image-" + caseId);
+            var qrContainer = $("#qr-container-" + caseId);
+    
+            // First, check the payment status before generating the QR code
+            $.ajax({
+                url: "/check_payment_status/", // New endpoint to check status
+                type: "GET",
+                data: { case_id: caseId },
+                success: function (response) {
+                    if (response.status === "error") {
+                        alert(response.message); // Show message if payment is already done
+                    } else {
+                        // If payment is not completed, fetch the QR code
+                        qrImg.attr("src", "/generate_qr_code_advance/" + caseId);
+                        qrContainer.show();
+                    }
+                },
+                error: function () {
+                    alert("Something went wrong. Please try again.");
+                }
+            });
+        });
+        $(".confirm-payment").click(function () {
+            var caseId = $(this).data("case-id");
+
+            $.ajax({
+                url: "{% url 'update_payment_status' %}",
+                type: "POST",
+                data: {
+                    'case_id': caseId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    if (response.status === "success") {
+                        alert(response.message);
+                        location.reload(); // Refresh page to update status
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert("Something went wrong. Please try again.");
+                }
+            });
+        });
+
+    
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".fix-advocate-btn").click(function () {
+                var categoryId = $(this).data("category");
+        
+                // Fetch advocates based on category
+                $.ajax({
+                    url: "{% url 'get_advocates_by_category' %}",
+                    type: "GET",
+                    data: { category_id: categoryId },
+                    success: function (data) {
+                        $("#advocateList").empty(); // Clear previous results
+        
+                        if (data.advocates.length > 0) {
+                            data.advocates.forEach(function (advocate) {
+                                $("#advocateList").append(`
+                                    <div class="advocate-item border p-2 mb-2 d-flex align-items-center">
+                                        <img src="${advocate.photo}" class="advocate-photo mr-2" alt="Advocate Photo">
+                                        <div>
+                                            <strong class="advocate-name">${advocate.name}</strong> <br>
+                                            <small class="advocate-phone">${advocate.phone_number}</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-primary ml-auto select-advocate" data-id="${advocate.id}">Select</button>
+                                    </div>
+                                `);
+                            });
+        
+                            $("#advocateModal").modal("show"); // Show modal only after data is loaded
+                        } else {
+                            $("#advocateList").html("<p>No advocates available.</p>");
+                        }
+                    }
+                });
+            });
+        
+            // ✅ Fixed Searching Function
+            $(document).on("keyup", "#searchAdvocate", function () {
+                var value = $(this).val().toLowerCase().trim();
+        
+                $(".advocate-item").each(function () {
+                    var name = $(this).find(".advocate-name").text().toLowerCase();
+                    var phone = $(this).find(".advocate-phone").text().toLowerCase();
+        
+                    if (name.includes(value) || phone.includes(value)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        
+            // Handle advocate selection
+            $(document).on("click", ".select-advocate", function () {
+                var advocateId = $(this).data("id");
+                var caseId = $(".fix-advocate-btn").data("case-id"); // Get case ID
+            
+                $.ajax({
+                    url: "{% url 'fix_advocate' %}",
+                    type: "POST",
+                    data: {
+                        'advocate_id': advocateId,
+                        'case_id': caseId,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.status === "success") {
+                            alert("Request sent successfully!");
+                            $("#advocateModal").modal("hide");
+                        } else {
+                            alert("Error: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Something went wrong. Please try again.");
+                    }
+                });
+            });
+            
+        });
+        
+</script>
+{% endblock %}

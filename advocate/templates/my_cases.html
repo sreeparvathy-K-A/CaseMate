@@ -1,0 +1,101 @@
+{% extends "advocatenav.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">MY CASES</h2>
+    
+
+    <!-- 🔹 Pending Cases Section -->
+    <h3 class="mt-4 text-warning">Pending Cases</h3>
+    {% if pending_cases %}
+        <div class="list-group">
+            {% for case in pending_cases %}
+                <div class="list-group-item">
+                    <h5>{{ case.case.category.categoryname }}</h5>
+                    <p><strong>Client name:</strong> {{ case.case.client.name }}</p>
+                    <p> <p><strong>Case Description:</strong>{{ case.case.description }}</p>
+                    <small>Submitted on: {{ case.case.date|date:"M d, Y" }}</small>
+                    <p><strong>Status:</strong> <span class="badge bg-warning">{{ case.status }}</span></p>
+                    <button class="btn btn-success approve-btn" data-case-id="{{ case.id }}">Approve</button>
+                    <button class="btn btn-danger reject-btn" data-case-id="{{ case.id }}">Reject</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No pending cases.</p>
+    {% endif %}
+
+    <!-- 🔹 Approved Cases Section -->
+    <h3 class="mt-4 text-success">Approved Cases</h3>
+    {% if approved_cases %}
+        <div class="list-group">
+            {% for case in approved_cases %}
+                <div class="list-group-item">
+                    <h5>{{ case.case.category.categoryname }}</h5>
+                    <p><strong>Client name:</strong> {{ case.case.client.name }}</p>
+                    <p><strong>Case Description:</strong>{{ case.case.description }}</p>
+                    <small>Submitted on: {{ case.case.date|date:"M d, Y" }}</small>
+                    <p><strong>Status:</strong> <span class="badge bg-success">{{ case.status }}</span></p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No approved cases.</p>
+    {% endif %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on("click", ".approve-btn", function () {
+        var caseId = $(this).data("case-id");
+        var button = $(this);
+
+        $.ajax({
+            url: "{% url 'approve_case' %}",
+            type: "POST",
+            data: {
+                'case_id': caseId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                if (response.status === "success") {
+                    alert("Case Approved!");
+                    button.closest(".list-group-item").fadeOut(); // Remove from pending list
+                } else {
+                    alert("Error: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Something went wrong.");
+            }
+        });
+    });
+
+    $(document).on("click", ".reject-btn", function () {
+        var caseId = $(this).data("case-id");
+        var button = $(this);
+
+        $.ajax({
+            url: "{% url 'reject_case' %}",
+            type: "POST",
+            data: {
+                'case_id': caseId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function (response) {
+                if (response.status === "success") {
+                    alert("Case Rejected!");
+                    button.closest(".list-group-item").fadeOut(); // Remove from pending list
+                } else {
+                    alert("Error: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Something went wrong.");
+            }
+        });
+    });
+</script>
+
+{% endblock %}

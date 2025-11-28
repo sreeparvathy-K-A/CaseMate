@@ -1,0 +1,46 @@
+{% extends "advocatenav.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">My Reviews</h2>
+    <div class="row">
+        {% for review in reviews %}
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ review.client.name }}</h5>
+                    <p class="card-text">{{ review.review }}</p>
+                    <div class="rating">
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                                <i class="fa fa-star text-warning"></i>
+                            {% else %}
+                                <i class="fa fa-star text-muted"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted">Reviewed on: {{ review.created_at }}</small>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No reviews yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+        transition: transform 0.3s ease-in-out;
+    }
+    .card:hover {
+        transform: scale(1.03);
+    }
+    .rating i {
+        font-size: 18px;
+    }
+</style>
+
+{% endblock %}

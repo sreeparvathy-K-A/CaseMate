@@ -1,0 +1,47 @@
+{% extends "index_nav.html" %}
+{% block style %}
+<style>
+    .about-container {
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+        text-align: center;
+    }
+    .about-heading {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+    }
+    .about-text {
+        font-size: 18px;
+        color: #555;
+        line-height: 1.6;
+        margin-top: 10px;
+    }
+    .highlight {
+        color: #ff9800;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div class="about-container">
+    <h2 class="about-heading">About CASEMATE</h2>
+    <p class="about-text">
+        Welcome to the <span class="highlight">CASEMATE</span>, your one-stop solution to find and connect with professional advocates easily.
+        Our platform is designed to help users handle their legal problems efficiently by providing direct access to legal experts.
+    </p>
+    <h3 class="about-heading">Why Choose Us?</h3>
+    <p class="about-text">
+        - Search for experienced advocates based on your legal needs.<br>
+        - Connect instantly via chat or phone (for premium users).<br>
+        - Get guidance on legal matters anytime, anywhere.<br>
+        - A seamless and secure platform for legal assistance.
+    </p>
+    <h3 class="about-heading">How It Works?</h3>
+    <p class="about-text">
+        Simply register, search for an advocate, and connect with them for legal assistance. Upgrade to a <span class="highlight">Premium Account</span> to unlock additional features like direct chat and phone consultations.
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "clientnav.html" %}
+{% load static %}
+{% block stylecontent %}
+<style>
+    .team .team-item {
+        width: 100%; /* Ensure full width inside column */
+        max-width: 320px; /* Increase max width */
+        margin: auto; /* Centering */
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background: #fff;
+        text-align: center;
+    }
+    
+    .team .team-item img {
+        width: 100%; /* Make the image responsive */
+        height: auto;
+        border-radius: 5px;
+    }
+    
+    .team .team-text h2 {
+        font-size: 18px; /* Adjust text size */
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    
+    .team .team-text p {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .text-center {
+        text-align: center;
+    }
+    .logo h2 {
+        color: rgb(145, 175, 76);
+        font-family: 'Arial', sans-serif;
+        font-size: 36px;
+        font-weight: bold;
+    }
+    .team .team-item:hover a.btn {
+        color: #121518;
+        background: #aa9166;
+    }
+    .team .team-item a.btn {
+        position: relative;
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #aa9166;
+        border: 2px solid #aa9166;
+        border-radius: 0;
+        background: #121518;
+        transition: .3s;
+        display: inline-block;
+    }
+    .category-tabs {
+        width: 25%;
+        float: left;
+        padding-right: 20px;
+    }
+    .category-tabs a {
+        display: block;
+        padding: 10px;
+        background: #f8f9fa;
+        margin-bottom: 5px;
+        text-decoration: none;
+        color: #333;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .category-tabs a:hover, .category-tabs a.active {
+        background: #aa9166;
+        color: white;
+    }
+    .team-container {
+        width: 70%;
+        float: left;
+    }
+    .clearfix::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="team clearfix">
+    <div class="container">
+        <div class="section-header">
+            <h2>Meet Our Expert Advocates</h2>
+        </div>
+
+        <div class="category-tabs">
+            <a href="{% url 'advocates' %}" class="{% if not selected_category %}active{% endif %}">All Categories</a>
+            {% for category in categories %}
+            <a href="{% url 'advocates' %}?category={{ category.id }}" 
+               class="{% if selected_category|slugify == category.id|slugify %}active{% endif %}">
+               {{ category.categoryname }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="team-container">
+            <div class="row">
+                {% for advocate in advocates %}
+                <div class="col-lg-4 col-md-6">  <!-- Change from col-lg-3 to col-lg-4 -->
+
+                    <div class="team-item">
+                        <div class="team-img">
+                            <img src="{{ advocate.photo.url }}" alt="Advocate Image"
+                                 onerror="this.src='{% static 'indexstyle/img/default-avatar.jpg' %}';" 
+                                 style="height:400px;">
+                        </div>
+                        <div class="team-text">
+                            <h2>{{ advocate.name }}</h2>
+                            <p>{{ advocate.qualification }}</p>
+                            <a class="btn" href="{% url 'view_individual_advocate' advocate.id %}">View More</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No advocates available for this category.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

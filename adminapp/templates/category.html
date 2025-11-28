@@ -1,0 +1,214 @@
+{% extends "adminnav.html" %}
+{% load static %}
+
+{% block stylecontent %}
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Category Card Styling */
+        .service-item {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #e0e0e0;
+        }
+        .service-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* Icon Styling */
+        .service-icon {
+            font-size: 15px;
+            color:rgb(25, 35, 235);  /* More neutral green */
+            margin-bottom: 10px;
+        }
+        .card i service{
+            font-size: 15px;
+            color:rgb(25, 35, 235);  /* More neutral green */
+            margin-bottom: 10px;
+        }
+        
+        /* Category Title */
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        /* Category Description */
+       
+        
+        /* Delete Button Styling */
+        
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        /* Modal Styling */
+        .modal-header {
+            background: #28a745;
+            color: white;
+            border-radius: 6px 6px 0 0;
+        }
+        .modal-footer {
+            border-top: none;
+        }
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5" style="margin-left:200px;">
+        <h2 class="mb-4">Categories</h2>
+
+        <!-- Button to trigger modal for adding a new category -->
+        <button class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#addCategoryModal" style="background: linear-gradient(45deg, #28a745, #32CD32); border-radius: 25px;">
+            <i class="fa fa-plus"></i> Add New Category
+        </button>
+
+        <!-- Categories Cards -->
+        <div class="row" id="category-cards">
+            {% for category in categories %}
+            <div class="col-md-6 mb-4 animate__animated animate__fadeIn" data-category-id="{{ category.id }}">
+                <div class="card service-item">
+                    <div class="service-icon">
+                        <i class="fa fa-landmark service"></i>
+                    </div>
+                    <h6 class="category-title">{{ category.categoryname }}</h6>
+                    <p>{{ category.description }}</p>
+                    <i class="fa fa-trash delete-icon" onclick="deleteCategory({{ category.id }})"></i>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+
+    <!-- Modal for Adding New Category -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="categoryForm" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="categoryname">Category Name</label>
+                            <input type="text" class="form-control" id="categoryname" name="categoryname" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitCategoryForm()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Form Submission and Category Deletion -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function submitCategoryForm() {
+            var formData = {
+                'categoryname': $('#categoryname').val(),
+                'description': $('#description').val(),
+                'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+            };
+        
+            $.ajax({
+                type: 'POST',
+                url: 'add_category',  
+                data: formData,
+                success: function(response) {
+                    // Attempt to get the existing modal instance
+                    var modalEl = document.getElementById('addCategoryModal');
+                    var modalInstance = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    } else {
+                        // Fallback: create a new modal instance and hide it
+                        var newModalInstance = new bootstrap.Modal(modalEl);
+                        newModalInstance.hide();
+                    }
+                    
+                    // Remove any modal backdrop and cleanup classes
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');
+                    
+                    // Build the new category card HTML
+                    var newCategoryCard = `
+                        <div class="col-md-6 mb-4 animate__animated animate__fadeIn" data-category-id="${response.id}">
+                            <div class="card service-item">
+                                <div class="service-icon">
+                                    <i class="fa fa-landmark"></i>
+                                </div>
+                                <h6 class="category-title">${response.categoryname}</h6>
+                                <p>${response.description}</p>
+                                <i class="fa fa-trash delete-icon" onclick="deleteCategory(${response.id})"></i>
+                            </div>
+                        </div>
+                    `;
+                    // Append the new card to the category container
+                    $('#category-cards').append(newCategoryCard);
+                    
+                    // Clear the form fields
+                    $('#categoryname').val('');
+                    $('#description').val('');
+                },
+                error: function(xhr, errmsg, err) {
+                    alert('Error: ' + errmsg);
+                }
+            });
+        }
+        
+        
+        // Ensure modal resets properly when closed
+        $('#addCategoryModal').on('hidden.bs.modal', function () {
+            $(this).find('form')[0].reset();
+            $('.modal-backdrop').remove();
+            $('body').removeClass('modal-open');
+        });
+        
+
+        function deleteCategory(categoryId) {
+            if (confirm("Are you sure you want to delete this category?")) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'delete_category',  
+                    data: {
+                        'category_id': categoryId,
+                        'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    success: function(response) {
+                        $('div[data-category-id="'+ categoryId +'"]').fadeOut(500, function() {
+                            $(this).remove();
+                        });
+                    },
+                    error: function(xhr, errmsg, err) {
+                        alert('Error: ' + errmsg);
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}

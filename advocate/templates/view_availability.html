@@ -1,0 +1,26 @@
+{% extends 'advocatenav.html' %}
+{% block content %}
+<div class="container">
+    <h2>Your Availability</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Time Slot</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for availability in availabilities %}
+            <tr>
+                <td>{{ availability.get_day_display }}</td>
+                <td>{{ availability.get_time_slot_display }}</td>
+                <td>{{ availability.start_time }}</td>
+                <td>{{ availability.end_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

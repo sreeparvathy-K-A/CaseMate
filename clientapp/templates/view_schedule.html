@@ -1,0 +1,78 @@
+{% extends "clientnav.html" %}
+{% block content %}
+{%load static%}
+<div class="container">
+    <h2>Schedule for {{ advocate.name }}</h2>
+    {% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Morning</th>
+                    <th>Afternoon</th>
+                    <th>Evening</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for date, data in schedule_matrix.items %}
+                <tr>
+                    <td><strong>{{ date }}</strong></td>
+                    <td><strong>{{ data.day }}</strong></td>
+                    {% for time_slot, schedule in data.slots.items %}
+                    <td>
+                        {% if schedule %}
+                        <button class="btn btn-success book-slot" 
+                        data-date="{{ date }}" 
+                        data-availability="{{ schedule.id }}" 
+                        data-advocate="{{ advocate.id }}">
+                    Book Slot ({{ schedule.start_time }})
+                </button>
+                        {% else %}
+                            <span class="text-muted">Unavailable</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'advocates' %}" class="btn btn-secondary">Back</a>
+</div>
+
+<!-- JavaScript for Booking -->
+<script>
+    document.querySelectorAll(".book-slot").forEach(button => {
+        button.addEventListener("click", function() {
+            let confirmBooking = confirm("Do you want to book this appointment?");
+            if (confirmBooking) {
+                let date = this.getAttribute("data-date");  
+                let availabilityId = this.getAttribute("data-availability");
+                let advocateId = "{{ advocate.id }}";  
+    
+                // Log values to the console
+                console.log("Advocate ID:", advocateId);
+                console.log("Availability ID:", availabilityId);
+    
+                if (availabilityId) {
+                    window.location.href = `/book/${advocateId}/${availabilityId}/?date=${date}`;
+                } else {
+                    alert("Error: Availability ID is missing!");
+                }
+            }
+        });
+    });
+    
+</script>
+{% endblock %}

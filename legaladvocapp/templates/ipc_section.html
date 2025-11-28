@@ -1,0 +1,60 @@
+{% extends "index_nav.html" %}
+{% block style %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        width: 80%;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .section-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .section-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s;
+        border-left: 5px solid #007bff;
+    }
+
+    .section-card:hover {
+        transform: scale(1.03);
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .section-description {
+        font-size: 14px;
+        color: #555;
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content1 %}
+<div class="container">
+    <h2 style="text-align: center; color: #333;">Indian Penal Code (IPC) Sections</h2>
+    <div class="section-grid">
+        {% for section in sections %}
+        <div class="section-card">
+            <div class="section-title">Section {{ section.sections }}</div>
+            <p class="section-description">{{ section.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

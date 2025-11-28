@@ -1,0 +1,32 @@
+{% extends "adminnav.html" %}
+{% load static %}
+{% block content %}
+
+<!-- Main Content -->
+<div class="main-content" style="margin-right:300px;">
+    <!-- Statistics Cards Section -->
+    <div class="stats-cards">
+        <div class="card">
+            <i class="fas fa-user-tie"></i>
+            <h3>Total Advocates</h3>
+            <p>{{ total_advocates }}</p> <!-- Display dynamic data for total advocates -->
+        </div>
+        <div class="card">
+            <i class="fas fa-users"></i>
+            <h3>Total Clients</h3>
+            <p>{{ total_clients }}</p> <!-- Display dynamic data for total clients -->
+        </div>
+        <div class="card">
+            <i class="fas fa-comments"></i>
+            <h3>Total Feedbacks</h3>
+            <p>{{ total_feedback }}</p> <!-- Display dynamic data for total feedbacks -->
+        </div>
+        <div class="card">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>Total Cases</h3>
+            <p>{{ total_cases }}</p> <!-- Display dynamic data for total cases -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}

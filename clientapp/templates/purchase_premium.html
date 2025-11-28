@@ -1,0 +1,80 @@
+{% extends "clientnav.html" %}
+{% load static %}
+
+{% block stylecontent %}
+<style>
+    .premium-btn, .chat-btn {
+        display: inline-block;
+        padding: 10px 15px;
+        background: #ff9800;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .premium-btn:hover, .chat-btn:hover {
+        background: #e68900;
+    }
+    .pay-btn {
+        padding: 12px;
+        background: #28a745;
+        color: white;
+        border: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .qr-container {
+        display: none; /* Initially hidden */
+        text-align: center;
+        margin-top: 20px;
+    }
+    .qr-container img {
+        width: 250px;
+        height: 250px;
+        border: 2px solid #ddd;
+        padding: 10px;
+        border-radius: 10px;
+        display: block;
+        margin: auto;
+    }
+    .submit-btn {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        display: none; /* Initially hidden */
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h2>Upgrade to Premium</h2>
+<p>Pay ₹200 to unlock advocate phone numbers & chat access.</p>
+
+<!-- Show QR Code on Button Click -->
+<button class="pay-btn" onclick="showQR()">Pay ₹200 & Upgrade</button>
+
+<!-- QR Code Section -->
+<div class="qr-container" id="qr-container">
+    <h3>Scan & Pay</h3>
+    <img src="{% url 'generate_qr' %}" alt="Payment QR Code">
+    <p>After payment, click the button below.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="submit-btn">Submit Payment</button>
+    </form>
+</div>
+
+<script>
+    function showQR() {
+        document.getElementById("qr-container").style.display = "block";
+        document.querySelector(".pay-btn").style.display = "none"; // Hide Pay button
+        document.querySelector(".submit-btn").style.display = "inline-block"; // Show Submit button
+    }
+</script>
+
+{% endblock %}

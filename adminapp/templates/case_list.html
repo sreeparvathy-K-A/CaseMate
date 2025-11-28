@@ -1,0 +1,89 @@
+{% extends "adminnav.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .case-container {
+        margin-left: 200px;
+        margin-top: 30px;
+    }
+    .case-card {
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out, box-shadow 0.3s;
+        background: #fff;
+    }
+    .case-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    }
+    .case-header {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    .case-body {
+        padding: 20px;
+    }
+    .badge-status {
+        font-size: 14px;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .badge-paid {
+        background-color: #28a745;
+        color: white;
+    }
+    .badge-pending {
+        background-color: #dc3545;
+        color: white;
+    }
+    .icon {
+        margin-right: 8px;
+        color: #007bff;
+    }
+</style>
+
+<div class="container case-container">
+    <h2 class="mb-4">📜 Admin Case List</h2>
+
+    {% if caselist %}
+        <div class="row">
+            {% for acase in caselist %}
+                <div class="col-md-6">
+                    <div class="card case-card my-3">
+                        <div class="case-header">
+                            <i class="fas fa-user"></i> Case for: {{ acase.case.client.name }}
+                        </div>
+                        <div class="case-body">
+                            <p><i class="fas fa-calendar-alt icon"></i><strong>Date Submitted:</strong> {{ acase.case.date|date:"Y-m-d" }}</p>
+                            <p><i class="fas fa-file-alt icon"></i><strong>Case Description:</strong> {{ acase.case.description }}</p>
+                            <p><i class="fas fa-folder icon"></i><strong>Category:</strong> {{ acase.case.category }}</p>
+                            <hr>
+                            {% if acase.advocate %}
+                                <p><i class="fas fa-user-tie icon"></i><strong>Advocate:</strong> {{ acase.advocate.name }}</p>
+                            {% else %}
+                                <p class="text-danger"><i class="fas fa-exclamation-circle icon"></i><strong>Advocate:</strong> Not assigned</p>
+                            {% endif %}
+                            <p><i class="fas fa-check-circle icon"></i><strong>Case Status:</strong> {{ acase.status }}</p>
+                            <p>
+                                <i class="fas fa-credit-card icon"></i><strong>Payment Status:</strong> 
+                                <span class="badge-status {% if acase.payment_status == 'Paid' %}badge-paid{% else %}badge-pending{% endif %}">
+                                    {{ acase.payment_status }}
+                                </span>
+                            </p>
+                            <p><i class="fas fa-clock icon"></i><strong>Booked on:</strong> {{ acase.created_at|date:"Y-m-d" }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">No cases found.</div>
+    {% endif %}
+</div>
+
+{% endblock %}

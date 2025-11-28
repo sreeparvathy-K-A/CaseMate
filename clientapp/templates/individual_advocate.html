@@ -1,0 +1,290 @@
+{% extends "clientnav.html" %}
+{% load static %}
+
+{% block stylecontent %}
+<style>
+    /* Review Section Styling */
+.review-section {
+    margin-top: 40px;
+    text-align: left;
+}
+
+.reviews-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #f9f9f9;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.review-card {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 5px solid #aa9166;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.review-card h4 {
+    margin: 0;
+    color: #333;
+}
+
+.review-card p {
+    color: #555;
+    margin: 5px 0;
+}
+
+.review-card small {
+    color: #777;
+}
+
+.rating {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.star {
+    color: #ccc;
+}
+
+.star.filled {
+    color: #ffcc00;
+}
+
+/* Review Form */
+.rating-input {
+    margin-bottom: 10px;
+}
+
+.rating-input select {
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.submit-review-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #fff;
+    background: #aa9166;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-review-btn:hover {
+    background: #8a7352;
+}
+
+    .profile-container {
+        max-width: 900px;
+        margin: auto;
+        padding: 40px;
+        background: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: center;
+    }
+    .profile-img img {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 20px;
+    }
+    .profile-details {
+        text-align: left;
+        padding: 20px;
+    }
+    .profile-details h2 {
+        font-size: 24px;
+        color: #333;
+    }
+    .profile-details p {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    .back-btn, .chat-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        color: #fff;
+        background: #aa9166;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background 0.3s;
+        margin-top: 20px;
+        margin-right: 10px;
+    }
+    .back-btn:hover, .chat-btn:hover {
+        background: #8a7352;
+    }
+    /* Case History Styling */
+    .case-history-section {
+        margin-top: 40px;
+        text-align: left;
+    }
+    .case-summary {
+        background: #f1f1f1;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .case-details {
+        display: none;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+    .hide-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 5px 10px;
+        background: #aa9166;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    .hide-btn:hover {
+        background: #8a7352;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-container">
+        <div class="profile-img">
+            <img src="{{ advocate.photo.url }}" alt="Advocate Image" onerror="this.src='{% static 'indexstyle/img/default-avatar.jpg' %}'">
+        </div>
+        <div class="profile-details">
+            <h2>{{ advocate.name }}</h2>
+            <p><strong>Qualification:</strong> {{ advocate.qualification }}</p>
+            <p><strong>Practice Area:</strong> {{ advocate.practice_description }}</p>
+            <p><strong>Office Location:</strong> {{ advocate.office_location }}, {{ advocate.city }}</p>
+            <p><strong>Enrollment Year:</strong> {{ advocate.enrollment_year }}</p>
+            <p><strong>Sitting Rate:</strong> ₹{{ advocate.sitting_rate }}</p>
+        </div>
+        <p><strong>Contact:</strong>
+            {% if is_premium %}
+                {{ advocate.phone_number }}
+            {% else %}
+                <a href="{% url 'purchase_premium' %}" class="premium-btn">Unlock Contact & Chat</a>
+            {% endif %}
+        </p>
+        
+        {% if is_premium %}
+            <a href="{% url 'chat_with_advocate' advocate.id %}" class="chat-btn">Chat With Me</a>
+        {% else %}
+            <a href="{% url 'purchase_premium' %}" class="chat-btn">Become Premium to Chat</a>
+        {% endif %}
+        <a href="{% url 'view_schedule' advocate.id %}" class="btn btn-primary">View Schedule</a>
+
+        <a href="{% url 'advocates' %}" class="back-btn">Back to Advocates</a>
+       
+        <!-- Case History Section -->
+        <div class="case-history-section">
+            <h3>Case History</h3>
+            {% if case_history %}
+                {% for case in case_history %}
+                    <div class="case-summary" onclick="toggleCaseDetails('case-{{ case.id }}')">
+                        <strong>Category:</strong> {{ case.category.categoryname }} | 
+                        <strong>Case No:</strong> {{ case.caseno }}
+                    </div>
+                    <div class="case-details" id="case-{{ case.id }}">
+                        <p><strong>Court:</strong> {{ case.court.courtname }}</p>
+                        <p><strong>Description:</strong> {{ case.description }}</p>
+                        <p><strong>Result:</strong> {{ case.result }}</p>
+                        <button class="hide-btn" onclick="toggleCaseDetails('case-{{ case.id }}'); event.stopPropagation();">Hide Details</button>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No case history available.</p>
+            {% endif %}
+        </div>
+        <!-- Review Section -->
+<div class="review-section">
+    <h3>Reviews & Ratings</h3>
+
+    <!-- Display Existing Reviews -->
+    <div class="reviews-list">
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review-card">
+                    <h4>{{ review.user.username }}</h4>
+                    <div class="rating">
+                        {% for i in "12345"|make_list %}
+                            {% if forloop.counter <= review.rating %}
+                                <span class="star filled">&#9733;</span>
+                            {% else %}
+                                <span class="star">&#9733;</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <p>{{ review.review }}</p>
+                    <small>{{ review.created_at|date:"F j, Y" }}</small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No reviews yet. Be the first to review this advocate!</p>
+        {% endif %}
+    </div>
+
+    <!-- Review Submission Form -->
+    <h4>Write a Review</h4>
+    <form method="POST" action="{% url 'submit_review' advocate.id %}">
+        {% csrf_token %}
+        <div class="rating-input">
+            <label>Rating:</label>
+            <select name="rating" required>
+                <option value="5">★★★★★ (5)</option>
+                <option value="4">★★★★☆ (4)</option>
+                <option value="3">★★★☆☆ (3)</option>
+                <option value="2">★★☆☆☆ (2)</option>
+                <option value="1">★☆☆☆☆ (1)</option>
+            </select>
+        </div>
+        <textarea name="comment" rows="3" placeholder="Write your review here..." required></textarea>
+        <button type="submit" class="submit-review-btn">Submit Review</button>
+    </form>
+</div>
+
+
+         <!-- Review Section -->
+        
+         
+    </div>
+</div>
+
+<script>
+    // Function to toggle the visibility of case details
+    function toggleCaseDetails(caseId) {
+        var detailsDiv = document.getElementById(caseId);
+        if (detailsDiv.style.display === "block") {
+            detailsDiv.style.display = "none";
+        } else {
+            detailsDiv.style.display = "block";
+        }
+    }
+</script>
+{% endblock %}

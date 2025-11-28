@@ -1,0 +1,42 @@
+{% extends 'advocatenav.html' %}
+{% block content %}
+
+<!-- Load FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+
+<!-- Load FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+<div class="container mt-4">
+    <h2>My Bookings</h2>
+    <div id="calendar"></div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var calendarEl = document.getElementById("calendar");
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: "dayGridMonth",
+            events: "/advocate_bookings/",  // ✅ Fetch bookings from API
+            eventClick: function(info) {
+                let clients = info.event.extendedProps.clients || [];
+                let message = "Bookings for this date:\n\n";
+                
+                clients.forEach(client => {
+                    message += `Client: ${client.name}\n`;
+                    message += `Time Slot: ${client.time_slot}\n`;
+                    message += `Start Time: ${client.start_time} - End Time: ${client.end_time}\n\n`;
+                });
+
+                alert(message);
+            }
+        });
+
+        calendar.render();
+    });
+</script>
+
+</script>
+
+{% endblock %}

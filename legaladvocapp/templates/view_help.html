@@ -1,0 +1,38 @@
+{% extends "index_nav.html" %}
+{%load static%}
+{%block content1%}
+<div class="faqs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="faqs-img">
+                    <img src="{% static 'indexstyle/img/faqs.jpg' %}" alt="Image">
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="section-header">
+                    <h2>Have A Question?</h2>
+                </div>
+                <div id="accordion">
+                    {% for faq in faqs %}
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link {% if forloop.first %}collapsed{% endif %}" data-toggle="collapse" href="#collapse{{ forloop.counter }}" aria-expanded="true">
+                                <span>{{ forloop.counter }}</span> {{ faq.question }}
+                            </a>
+                        </div>
+                        <div id="collapse{{ forloop.counter }}" class="collapse {% if forloop.first %}show{% endif %}" data-parent="#accordion">
+                            <div class="card-body">
+                                {{ faq.answer }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}
